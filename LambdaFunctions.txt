@@ -1,0 +1,44 @@
+*/--------------------------------------------------------------------------------------
+   Append 2 columns
+--------------------------------------------------------------------------------------*/
+
+AppendTwoCols
+=LAMBDA(range1,range2,
+  LET(
+          RowsRng1, ROWS(range1),
+          RowsTotal, ROWS(range1) + ROWS(range2),
+          Seq,SEQUENCE(RowsTotal),
+          IF(
+              Seq<=RowsRng1, INDEX(range1, Seq),
+              INDEX(range2, Seq-RowsRng1)
+             )
+         )
+)
+
+
+*/--------------------------------------------------------------------------------------
+   Stack Array
+    - converts an n-column array to a 1 column array by stacking all columns on top
+      of each other.
+    - can be utilised to append seperate 1 column ranges by passing a paramater
+      which includes the choose function for example choose({1,2,3}, rng1, rng2, rng3)
+--------------------------------------------------------------------------------------*/
+
+StackArrray
+=LAMBDA(ArrayToStack,
+     LET(
+           ColCount, COLUMNS(ArrayToStack),
+           RowCount, ROWS(ArrayToStack),
+           CellCount, ColCount * RowCount,
+           Seq, SEQUENCE(CellCount),
+           RowIndex, MOD(Seq-1,RowCount)+1,
+           ColIndex, ROUNDUP(Seq/RowCount, 0),
+           ErrorValue, 1/0,
+           ReturnValue, INDEX(ArrayToStack, RowIndex, ColIndex),
+           ArrayInclErrors, IF(ReturnValue = "", ErrorValue, ReturnValue),
+           FILTER(ArrayInclErrors, NOT(ISERROR(ArrayInclErrors)))
+        )
+)
+
+
+
