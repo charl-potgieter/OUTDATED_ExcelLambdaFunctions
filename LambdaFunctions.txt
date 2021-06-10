@@ -41,4 +41,101 @@ StackArrray
 )
 
 
+*/--------------------------------------------------------------------------------------
+     Append two ranges
+     https://exceljet.net/formula/lambda-append-range
+--------------------------------------------------------------------------------------*/
 
+AppendTwoRanges
+=LAMBDA(range1,range2,
+    LET(
+        rows1,ROWS(range1),
+        rows2,ROWS(range2),
+        cols1,COLUMNS(range1),
+        cols2,COLUMNS(range2),
+        rowindex,SEQUENCE(rows1+rows2),
+        colindex,SEQUENCE(1,MAX(cols1,cols2)),
+       IF(
+          rowindex<=rows1,
+          INDEX(range1,rowindex,colindex),
+          INDEX(range2,rowindex-rows1,colindex)
+        )
+    )
+)
+
+
+
+*/--------------------------------------------------------------------------------------
+     Split text to array
+     https://exceljet.net/formula/lambda-split-text-to-array
+--------------------------------------------------------------------------------------*/
+
+
+=LAMBDA(range1,range2,default,
+  LET(
+  rows1,ROWS(range1),
+  rows2,ROWS(range2),
+  cols1,COLUMNS(range1),
+  cols2,COLUMNS(range2),
+  rowindex,SEQUENCE(rows1+rows2),
+  colindex,SEQUENCE(1,MAX(cols1,cols2)),
+  result,
+  IF(
+    rowindex<=rows1,
+    INDEX(range1,rowindex,colindex),
+    INDEX(range2,rowindex-rows1,colindex)
+  )
+  )
+)
+
+
+*/--------------------------------------------------------------------------------------
+     Split text to array
+     https://exceljet.net/formula/lambda-split-text-to-array
+--------------------------------------------------------------------------------------*/
+SplitTextToArray
+=LAMBDA(text,delim,
+      TRANSPOSE(
+           FILTERXML(
+                "<x><y>" & SUBSTITUTE(text,delim,"</y><y>") & "</y></x>",
+                 "//y"
+             )
+       )
+)
+
+
+*/--------------------------------------------------------------------------------------
+     Month Ends Between Dates
+--------------------------------------------------------------------------------------*/
+
+MonthEndsBetweenDates
+=LAMBDA(DateStart,DateEnd,
+      LET(
+           MonthsBetween, (YEAR(DateEnd) * 12 + MONTH(DateEnd))  - (YEAR(DateStart) * 12 + MONTH(DateStart)) + 1,
+           Seq, SEQUENCE(MonthsBetween),
+           EOMONTH(DateStart, Seq-1)
+      )
+)
+
+
+*/--------------------------------------------------------------------------------------
+     Cell above range
+--------------------------------------------------------------------------------------*/
+CellAboveRange
+=LAMBDA(cell,
+    OFFSET(cell, -1,0,1,1)
+ 
+
+*/--------------------------------------------------------------------------------------
+     Table column
+     -  returns entire column from a 2 dimensional array or range with headers
+--------------------------------------------------------------------------------------*/
+TableColumn
+=LAMBDA(TableRange,ColName,
+    LET(
+        Headers, INDEX(TableRange, 1,),
+        HeaderIndex, MATCH(ColName, Headers, 0),
+        DataRows, ROWS(TableRange) - 1,
+        OFFSET(TableRange, 1,HeaderIndex-1, DataRows, 1)
+     )
+)
