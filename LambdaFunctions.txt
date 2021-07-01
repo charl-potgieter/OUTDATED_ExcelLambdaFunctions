@@ -151,10 +151,10 @@ EntireRowBasedOnLookup =
   LET(
        TotalColumnsInSheet, COLUMNS(INDIRECT("1:1")),
        LookupColumnNumber, COLUMN(LookupCol),
-       MatchIndex, MATCH(LookupValue, LookupCol, 0),
+       LookupValueCell, INDEX(LookupCol, MATCH(LookupValue, LookupCol, 0)),
        ReturnValue, IF(
             COLUMNS(LookupCol) <> 1, "LookupCol can only contain contain one column",
-            OFFSET(INDEX(LookupCol, MatchIndex), 0, -(LookupColumnNumber-1),1,TotalColumnsInSheet)
+            OFFSET(LookupValueCell, 0, -(LookupColumnNumber-1),1,TotalColumnsInSheet)
         ),
        ReturnValue
   )
