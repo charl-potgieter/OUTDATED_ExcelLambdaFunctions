@@ -139,3 +139,23 @@ TableColumn
         OFFSET(TableRange, 1,HeaderIndex-1, DataRows, 1)
      )
 )
+
+
+
+*/--------------------------------------------------------------------------------------
+     Return entire row based on lookup
+      - Returns first entire row where lookup value is found in LookupCol
+--------------------------------------------------------------------------------------*/
+EntireRowBasedOnLookup = 
+=LAMBDA(LookupValue,LookupCol,
+  LET(
+       TotalColumnsInSheet, COLUMNS(INDIRECT("1:1")),
+       LookupColumnNumber, COLUMN(LookupCol),
+       MatchIndex, MATCH(LookupValue, LookupCol, 0),
+       ReturnValue, IF(
+            COLUMNS(LookupCol) <> 1, "LookupCol can only contain contain one column",
+            OFFSET(INDEX(LookupCol, MatchIndex), 0, -(LookupColumnNumber-1),1,TotalColumnsInSheet)
+        ),
+       ReturnValue
+  )
+)
