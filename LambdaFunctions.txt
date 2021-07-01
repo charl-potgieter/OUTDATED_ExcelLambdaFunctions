@@ -140,13 +140,26 @@ TableColumn
      )
 )
 
+*/--------------------------------------------------------------------------------------
+     Last non empty column in row
+--------------------------------------------------------------------------------------*/
+
+LastNonEmptyColumnInRow
+=LAMBDA(RowToCheck,
+   IF(
+       ROWS(RowToCheck) <> 1,
+       "RowToCheck Needs to be a single row only",
+        MAX((RowToCheck<>"") * COLUMN(RowToCheck))
+   )
+
 
 
 */--------------------------------------------------------------------------------------
-     Return entire row based on lookup
+     Entire Row Based On Lookup
+      - Return entire row based on lookup
       - Returns first entire row where lookup value is found in LookupCol
 --------------------------------------------------------------------------------------*/
-EntireRowBasedOnLookup = 
+EntireRowBasedOnLookup
 =LAMBDA(LookupValue,LookupCol,
   LET(
        TotalColumnsInSheet, COLUMNS(INDIRECT("1:1")),
@@ -160,16 +173,23 @@ EntireRowBasedOnLookup =
   )
 )
 
-
 */--------------------------------------------------------------------------------------
-     
+     Non Blank Portion Of Row Based On Lookup
+      - Identifies row by finding LookupValue in LookupColumn
+      - Returns row from one cell right of LookupColumn to last non-empty cell in the row
 --------------------------------------------------------------------------------------*/
-
-LastNonEmptyColumnInRow
-=LAMBDA(RowToCheck,
-   IF(
-       ROWS(RowToCheck) <> 1,
-       "RowToCheck Needs to be a single row only",
-        MAX((RowToCheck<>"") * COLUMN(RowToCheck))
-   )
+NonBlankPortionOfRowBasedOnLookup
+= LAMBDA(LookupValue,LookupCol,
+  LET(
+       TotalColumnsInSheet, COLUMNS(INDIRECT("1:1")),
+       LookupColumnNumber, COLUMN(LookupCol),
+       LookupValueCell, INDEX(LookupCol, MATCH(LookupValue, LookupCol, 0)),
+       EntireRow, IF(
+            COLUMNS(LookupCol) <> 1, "LookupCol can only contain contain one column",
+            OFFSET(LookupValueCell, 0, -(LookupColumnNumber-1),1,TotalColumnsInSheet)
+        ),
+       LastNonEmptyColumnInRow, MAX((EntireRow<>"") * COLUMN(EntireRow)),
+       ReturnValue,OFFSET(LookupValueCell, 0, 1, 1, (LastNonEmptyColumnInRow - LookupColumnNumber)),
+       ReturnValue
+  )
 )
