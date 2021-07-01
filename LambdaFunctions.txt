@@ -159,3 +159,17 @@ EntireRowBasedOnLookup =
        ReturnValue
   )
 )
+
+
+*/--------------------------------------------------------------------------------------
+     
+--------------------------------------------------------------------------------------*/
+
+LastNonEmptyColumnInRow
+=LAMBDA(RowToCheck,
+   IF(
+       ROWS(RowToCheck) <> 1,
+       "RowToCheck Needs to be a single row only",
+        MAX((RowToCheck<>"") * COLUMN(RowToCheck))
+   )
+)
