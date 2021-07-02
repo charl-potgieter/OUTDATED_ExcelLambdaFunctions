@@ -166,8 +166,9 @@ EntireRowBasedOnLookup
        LookupColumnNumber, COLUMN(LookupCol),
        LookupValueCell, INDEX(LookupCol, MATCH(LookupValue, LookupCol, 0)),
        ReturnValue, IF(
-            COLUMNS(LookupCol) <> 1, "LookupCol can only contain contain one column",
-            OFFSET(LookupValueCell, 0, -(LookupColumnNumber-1),1,TotalColumnsInSheet)
+            COLUMNS(LookupCol) = 1,
+            OFFSET(LookupValueCell, 0, -(LookupColumnNumber-1),1,TotalColumnsInSheet),
+           "LookupCol can only contain contain one column"
         ),
        ReturnValue
   )
@@ -179,17 +180,18 @@ EntireRowBasedOnLookup
       - Returns row from one cell right of LookupColumn to last non-empty cell in the row
 --------------------------------------------------------------------------------------*/
 NonBlankPortionOfRowBasedOnLookup
-= LAMBDA(LookupValue,LookupCol,
+=LAMBDA(LookupValue,LookupCol,
   LET(
        TotalColumnsInSheet, COLUMNS(INDIRECT("1:1")),
        LookupColumnNumber, COLUMN(LookupCol),
        LookupValueCell, INDEX(LookupCol, MATCH(LookupValue, LookupCol, 0)),
-       EntireRow, IF(
-            COLUMNS(LookupCol) <> 1, "LookupCol can only contain contain one column",
-            OFFSET(LookupValueCell, 0, -(LookupColumnNumber-1),1,TotalColumnsInSheet)
-        ),
+       EntireRow, OFFSET(LookupValueCell, 0, -(LookupColumnNumber-1),1,TotalColumnsInSheet),
        LastNonEmptyColumnInRow, MAX((EntireRow<>"") * COLUMN(EntireRow)),
-       ReturnValue,OFFSET(LookupValueCell, 0, 1, 1, (LastNonEmptyColumnInRow - LookupColumnNumber)),
-       ReturnValue
+       ReturnValue, IF(
+            COLUMNS(LookupCol) = 1,
+            OFFSET(LookupValueCell, 0, 1, 1, (LastNonEmptyColumnInRow - LookupColumnNumber)),
+            "LookupCol can only contain contain one column"
+       ),
+      ReturnValue
   )
 )
