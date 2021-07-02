@@ -195,3 +195,27 @@ NonBlankPortionOfRowBasedOnLookup
       ReturnValue
   )
 )
+
+
+*/--------------------------------------------------------------------------------------
+     Non Blank Portion Of Row Based On Lookup
+      - Identifies row by finding LookupValue in LookupColumn
+      - Returns row from one cell right of LookupColumn to last non-empty cell in the row
+--------------------------------------------------------------------------------------*/
+
+
+NonBlankPortionOfRowFromStartCell
+=LAMBDA(StartCell,
+  LET(
+       TotalColumnsInSheet, COLUMNS(INDIRECT("1:1")),
+       StartCellColumnNumber, COLUMN(StartCell),
+       EntireRow, OFFSET(StartCell, 0, -(StartCellColumnNumber-1),1,TotalColumnsInSheet),
+       LastNonEmptyColumnInRow, MAX((EntireRow<>"") * COLUMN(EntireRow)),
+       ReturnValue, IF(
+            AND(COLUMNS(StartCell) = 1, ROWS(StartCell)=1),
+            OFFSET(StartCell, 0, 0, 1, (LastNonEmptyColumnInRow - StartCellColumnNumber + 1)),
+            "StartCell needs to be a single cell only"
+       ),
+      ReturnValue
+  )
+)
