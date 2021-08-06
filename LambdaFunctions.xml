@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <LambdaDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<Record>
-		<Name>Call above range</Name>
+		<Name>CellAboveRange</Name>
 		<RefersTo>=LAMBDA(cell,
     OFFSET(cell, -1,0,1,1)
 )</RefersTo>
 		<Category>Cell navigation</Category>
 		<Author>Charl Potgieter</Author>
-		<Comment>Returns cell above first cell in given range</Comment>
+		<Description>Returns cell above first cell in given range</Description>
+		<ParameterDescription>cell|The cell for which the cell above will be returned</ParameterDescription>
 	</Record>
 </LambdaDocument>
